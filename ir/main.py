@@ -1,7 +1,4 @@
-import ir.receiver
-import redis
+import importlib
 
 if __name__ == "__main__":
-    ir.receiver.Receiver.start()
-
-
+    importlib.import_module('receiver').Receiver.start()

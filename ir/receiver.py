@@ -1,10 +1,11 @@
 import time
 import redis
+import importlib
 # import ir.transmitter as ir
 # import signal
 # import sys
 # import os
-import ir.led as led
+# import ir.ledTest as ledTest
 
 
 class Receiver:
@@ -12,43 +13,34 @@ class Receiver:
     SURVEILLANCE_INTERVAL = 1
     REDIS_LISTNAME = 'order'
     runCodeQueue = redis.Redis(host='localhost', port=6379)
+    counter = 0
 
     @classmethod
     def start(self):
+        led = importlib.import_module('led')
         try:
             while True:
                 time.sleep(self.SURVEILLANCE_INTERVAL)
                 if self.runCodeQueue.llen(self.REDIS_LISTNAME) != 0:
                     runKey = self.runCodeQueue.lpop(self.REDIS_LISTNAME).decode('utf-8')
-                    # 本番用
                     # ir.transmission(runKey)
-                    # デモ用
                     led.toggle_led(runKey)
-                print('待機中')
+                    # ledTest.toggle_led(runKey)
+                print('wait')
+                if self.counter == 5:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
+                elif self.counter == 10:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'ana')
+                elif self.counter == 15:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'test')
+                elif self.counter == 20:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
+                elif self.counter == 25:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'end')
+
+                self.counter = self.counter+1
+
         except KeyboardInterrupt:
             pass
-
-# 別の方法
-# SURVEILLANCE_INTERVAL = 0.5
-#
-# Q=[0,1,2,3,4]
-#
-# def task(arg1, arg2):
-#     print(time.time())
-#     if(len(Q)!=0):
-#         Q.pop(0)
-#         print(Q)
-#     else:
-#         print(os.getpid())
-#         os.kill(os.getpid(), signal.SIGTERM)
-#
-# def handler(signa, frame):
-#     print('終了')
-#     sys.exit(0)
-#
-# signal.signal(signal.SIGTERM, handler)
-# signal.signal(signal.SIGALRM, task)
-# signal.setitimer(signal.ITIMER_REAL, 0.1, SURVEILLANCE_INTERVAL)
-#
-# while True:
-#     pass

@@ -29,6 +29,7 @@ def __carrier(gpio, frequency, micros):
         wf.append(pigpio.pulse(0, 1 << gpio, off))
     return wf
 
+
 def transmission(runKey):
     try:
         f = open(FILE, "r")
