@@ -23,6 +23,7 @@ class Receiver:
                 time.sleep(self.SURVEILLANCE_INTERVAL)
                 if self.runCodeQueue.llen(self.REDIS_LISTNAME) != 0:
                     runKey = self.runCodeQueue.lpop(self.REDIS_LISTNAME).decode('utf-8')
+                    print("Command received: %s"  % runKey)
                     # ir.transmission(runKey)
                     led.toggle_led(runKey)
                 # print('wait')
