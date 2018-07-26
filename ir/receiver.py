@@ -14,7 +14,7 @@ class Receiver:
     counter = 0 # test
 
     @classmethod
-    def start(self):
+    def run(self):
         led = importlib.import_module('led')
         try:
             while True:
@@ -25,21 +25,21 @@ class Receiver:
                     led.toggle_led(runKey)
                 print('wait')
 
-                #test event emit
-                # if self.counter == 5:
-                #     self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
-                # elif self.counter == 10:
-                #     self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
-                #     self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
-                #     self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'center')
-                # elif self.counter == 15:
-                #     self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
-                # elif self.counter == 20:
-                #     self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
-                # elif self.counter == 25:
-                #     self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'end')
-                #
-                # self.counter = self.counter+1
+                # test event emit
+                if self.counter == 5:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
+                elif self.counter == 10:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'center')
+                elif self.counter == 15:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
+                elif self.counter == 20:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
+                elif self.counter == 25:
+                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'end')
+
+                self.counter = self.counter+1
 
         except KeyboardInterrupt:
             pass
