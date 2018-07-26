@@ -1,6 +1,7 @@
 import time
 import redis
-import importlib
+from IRControlSystem.ir import led
+# import importlib
 # import ir.transmitter as ir
 # import signal
 # import sys
@@ -15,7 +16,6 @@ class Receiver:
 
     @classmethod
     def run(self):
-        led = importlib.import_module('led')
         try:
             while True:
                 time.sleep(self.SURVEILLANCE_INTERVAL)
