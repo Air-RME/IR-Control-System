@@ -1,6 +1,8 @@
 import time
 import redis
 from IRControlSystem.ir import led
+
+
 # import importlib
 # import ir.transmitter as ir
 # import signal
@@ -12,7 +14,7 @@ class Receiver:
     SURVEILLANCE_INTERVAL = 1
     REDIS_LISTNAME = 'order'
     runCodeQueue = redis.Redis(host='localhost', port=6379)
-    counter = 0 # test
+    counter = 0  # test
 
     @classmethod
     def run(self):
@@ -23,23 +25,23 @@ class Receiver:
                     runKey = self.runCodeQueue.lpop(self.REDIS_LISTNAME).decode('utf-8')
                     # ir.transmission(runKey)
                     led.toggle_led(runKey)
-                print('wait')
+                # print('wait')
 
                 # test event emit
-                if self.counter == 5:
-                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
-                elif self.counter == 10:
-                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
-                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
-                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'center')
-                elif self.counter == 15:
-                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
-                elif self.counter == 20:
-                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
-                elif self.counter == 25:
-                    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'end')
+                # if self.counter == 5:
+                #    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
+                # elif self.counter == 10:
+                #    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
+                #    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
+                #    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'center')
+                # elif self.counter == 15:
+                #    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'right')
+                # elif self.counter == 20:
+                #    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'left')
+                # elif self.counter == 25:
+                #    self.runCodeQueue.rpush(self.REDIS_LISTNAME, 'end')
 
-                self.counter = self.counter+1
+                # self.counter = self.counter+1
 
         except KeyboardInterrupt:
             pass
