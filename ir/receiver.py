@@ -14,7 +14,7 @@ class Receiver:
     counter = 0 # test
 
     @classmethod
-    def start(self):
+    def run(self):
         led = importlib.import_module('led')
         try:
             while True:
