@@ -2,16 +2,18 @@ import time
 import redis
 import json
 
+import IRControlSystem.transmitter as ir
+
 
 class Receiver:
     # OPTION
     SURVEILLANCE_INTERVAL = 1
     REDIS_LISTNAME = 'order'
     runCodeQueue = redis.Redis(host='localhost', port=6379)
-    mode = ["h", "c", "d"]
-    strength = ["str1", "str3", "str4"]
-
-
+    mode = ["c_", "h_", "d_"]
+    strength = ["dir3_str1.json", "dir3_str3.json", "dir3_str4.json"]
+    # 緊急コード
+    DIR_NAME = "IRControlSystem/Ir_code/"
 
     @classmethod
     def run(self):
@@ -21,16 +23,30 @@ class Receiver:
                 if self.runCodeQueue.llen(self.REDIS_LISTNAME) != 0:
                     order_json = self.runCodeQueue.lpop(self.REDIS_LISTNAME).decode('utf-8')
                     order_list = json.loads(order_json)
+
                     if order_list["on"] == "on":
-                        order_list["mode"]
-                        order_list["strength"]
-                        order_list["temperature"]
-                    elif order_list["off"] == "off":
-                        pass
+                        if order_list["mode"] == 2:
+                            runKey = "2_0"
+                            fileName = self.DIR_NAME + "d_dir3.json"
+
+                        else:
+                            keyM = self.mode[order_list["mode"]]
+                            keyS = self.strength[order_list["strength"]]
+                            runKey = str(order_list["temperature"])
+                            fileName = self.DIR_NAME + keyM + keyS
+
+                        ir.boot("on")
+                        time.sleep(self.SURVEILLANCE_INTERVAL * 3)
+                        ir.transmission(runKey, fileName)
+                        time.sleep(self.SURVEILLANCE_INTERVAL * 3)
+                    elif order_list["on"] == "off":  # 電源オフ
+                        ir.boot("off")
+                        time.sleep(self.SURVEILLANCE_INTERVAL * 3)
+                        # 二回停止しないと洗浄モードが切れないため
+                        ir.boot("off")
+                        time.sleep(self.SURVEILLANCE_INTERVAL * 3)
                     else:
                         print("error order code")
-
-                    ir.transmission(runKey)
 
         except KeyboardInterrupt:
             print("error receiver")
